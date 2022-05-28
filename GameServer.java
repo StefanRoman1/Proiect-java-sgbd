@@ -22,26 +22,28 @@ public class GameServer extends JFrame {
         {
             System.out.println("Asteptam jucator 1...");
             jucator1socket = serverSocket.accept();
+            String nume = null;
             try{
-                PrintWriter out = new PrintWriter(jucator1socket.getOutputStream(), true);
-                Scanner in = new Scanner(jucator1socket.getInputStream());
-                in.nextLine();
-                out.println("Buna ziua jucator 1");
+                PrintWriter out1 = new PrintWriter(jucator1socket.getOutputStream(), true);
+                Scanner in1 = new Scanner(jucator1socket.getInputStream());
+                nume = in1.nextLine();
+                out1.println("Buna ziua " + nume);
             }catch (Exception e) {
                 System.out.println("error socket jucator 1"); }
-            Player player1 = new Player(jucator1socket);
+            Player player1 = new Player(jucator1socket,nume);
 
             System.out.println("Asteptam jucator 2...");
             jucator2socket = serverSocket.accept();
-            Player player2 = new Player(jucator2socket);
+            try{
+                PrintWriter out2 = new PrintWriter(jucator2socket.getOutputStream(), true);
+                Scanner in2 = new Scanner(jucator2socket.getInputStream());
+                nume = in2.nextLine();
+                out2.println("Buna ziua " + nume);
+            }catch (Exception e) {
+                System.out.println("error socket jucator 2"); }
+            Player player2 = new Player(jucator2socket,nume);
             System.out.println("Avem 2 jucatori, let the games begin");
-            /*Thread thread  = new Thread() {
-                public void run() {
-                    new TicTacToe(player1,player2);
-                }
-            };
-            thread.start();*/
-            new TicTacToe(player1,player2);
+            new TicTacToe2(player1,player2);
         }
     }
 }

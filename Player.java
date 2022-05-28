@@ -8,7 +8,9 @@ public class Player {
 
     public PrintWriter out;
     public Scanner in;
-    public Player(Socket socket) {
+    public String nume;
+    public Player(Socket socket,String nume) {
+        this.nume = nume;
         try{
             out = new PrintWriter(socket.getOutputStream(),true);
             in = new Scanner(socket.getInputStream());

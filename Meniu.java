@@ -94,7 +94,7 @@ public class Meniu extends JFrame implements ActionListener {
                     Socket socket = new Socket(HOST, 2000);
                     PrintWriter gout = new PrintWriter(socket.getOutputStream(), true);
                     Scanner gin = new Scanner(socket.getInputStream());
-                    gout.println("Eu sunt jucatorul " + nume);
+                    gout.println(nume);
                     System.out.println(gin.nextLine());
                 }catch (Exception ex) {
                     System.out.println("eroare aiaie");
@@ -104,11 +104,11 @@ public class Meniu extends JFrame implements ActionListener {
             {
                 try {
                     Socket socket = new Socket(HOST, 2000);
-                    PrintWriter gout = new PrintWriter(socket.getOutputStream(), true);
-                    Scanner gin = new Scanner(socket.getInputStream());
-                    //gout.println("Hai noroc");
-                    //System.out.println(gin.nextLine());
-                }catch (Exception ex) {System.out.println("eroare aiaie");}
+                    PrintWriter gout1 = new PrintWriter(socket.getOutputStream(), true);
+                    Scanner gin1 = new Scanner(socket.getInputStream());
+                    gout1.println(nume);
+                    System.out.println(gin1.nextLine());
+                }catch (Exception ex) {System.out.println("eroare aiaie2");}
             }
         }
         else if(e.getSource() == logati)

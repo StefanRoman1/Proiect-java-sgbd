@@ -15,6 +15,7 @@ public class Server {
     public static void main(String[] args) throws IOException {
         final int PORT = 4040;
         ServerSocket serverSocket = new ServerSocket(PORT);
+        //new TicTacToe2();
 
         System.out.println("Server started...");
         System.out.println("Wating for clients...");
