@@ -7,6 +7,10 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.sql.*;
 
+/**
+ * Formularul de logare.
+ */
+
 public class LoginForm extends JFrame implements ActionListener{
 
     private Container c;
@@ -21,6 +25,9 @@ public class LoginForm extends JFrame implements ActionListener{
     public RegisterForm registerForm;
     public Meniu meniu;
 
+    /**
+     * In constructor creeam interfata grafica a formularului de logare
+     */
     public LoginForm() {
         setTitle("Login Form");
         setBounds(300, 90, 600, 600);
@@ -83,6 +90,12 @@ public class LoginForm extends JFrame implements ActionListener{
         setVisible(true);
     }
 
+    /**
+     * Daca este apasat butonul de login, verificam ca utilizatorul sa existe, in caz afirmativ verificam sa nu fie
+     * conectat deja.
+     * Daca este apasat butonul de register, deschidem formularul de inregistrare.
+     * @param e
+     */
     public void actionPerformed(ActionEvent e)
     {
         if (e.getSource() == login)

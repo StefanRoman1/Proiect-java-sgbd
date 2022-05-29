@@ -4,6 +4,10 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+/**
+ * Jocul propriu-zis
+ */
+
 public class TicTacToe2 implements ActionListener {
     JFrame frame = new JFrame();
     JFrame frame1 = new JFrame();
@@ -20,6 +24,11 @@ public class TicTacToe2 implements ActionListener {
     public Player player1;
     public Player player2;
 
+    /**
+     * Aici se creeaza cele doua interfete grafice pentru cei doi utilizatori
+     * @param player1
+     * @param player2
+     */
     public TicTacToe2(Player player1, Player player2) {
         {
             this.player1 = player1;
@@ -88,6 +97,11 @@ public class TicTacToe2 implements ActionListener {
 
     }
 
+    /**
+     * Jocul se va termina cand unul din jucatori a castigat sau cand este declarata remiza, moment in care vor primi un anumit punctaj in functie de finalul
+     * jocului.
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(playerTurn)
@@ -131,6 +145,9 @@ public class TicTacToe2 implements ActionListener {
         }
     }
 
+    /**
+     * Verificam daca exista 3 piese de acelasi fel aliniate
+     */
     public void check_move() {
         if ((bton[0].getText() == "X") && (bton[1].getText() == "X") && (bton[2].getText() == "X")) {
             Win(0, 1, 2);
@@ -186,6 +203,12 @@ public class TicTacToe2 implements ActionListener {
         }
     }
 
+    /**
+     * Daca a fost declarat un castigator, marcam linia prin care a fost castigat jocul
+     * @param x1
+     * @param x2
+     * @param x3
+     */
     public void Win(int x1, int x2, int x3)
     {
         bton[x1].setBackground(Color.YELLOW);
@@ -208,6 +231,10 @@ public class TicTacToe2 implements ActionListener {
         }
     }
 
+    /**
+     * Inchidem jocul si trimitem pe socketul fiecarui jucator rezultatul final
+     * @param s
+     */
     public void EndGame(String s)
     {
         frame.dispose();

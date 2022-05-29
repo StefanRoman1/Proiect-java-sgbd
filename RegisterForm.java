@@ -7,6 +7,10 @@ import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
 
+/**
+ * Formularul de inregistrare unde un utilizator isi poate creea un cont.
+ */
+
 public class RegisterForm extends JFrame implements ActionListener {
 
     private Container c;
@@ -25,6 +29,9 @@ public class RegisterForm extends JFrame implements ActionListener {
     private JLabel res;
     public LoginForm loginForm;
 
+    /**
+     * Interfata grafica a formularului
+     */
     public RegisterForm() {
 
         setTitle("Register Form");
@@ -117,6 +124,10 @@ public class RegisterForm extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * Aici verificam ca utilizatorul sa nu lase spatii necompletate si ca parola si verificarea ei sa coincida.
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(tpassword.getText().equals(trepassword.getText()))

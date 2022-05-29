@@ -5,9 +5,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
+/**
+ * Serverul la care se conecteaza toti clientii in mod concurent
+ */
 public class Server {
+    /**
+     * @param waiting este folosit pentru a grupa utilizatorii 2 cate 2 in meciuri
+     */
     public static int waiting = 0;
 
+    /**
+     * Ruland mainul deschidem serverul pentru conectarea clientilor.
+     * @param args
+     * @throws IOException
+     */
     public static void main(String[] args) throws IOException {
         final int PORT = 4040;
         ServerSocket serverSocket = new ServerSocket(PORT);

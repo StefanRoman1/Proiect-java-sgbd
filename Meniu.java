@@ -13,6 +13,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
+/**
+ * Dupa ce ne-am logat, utilizatorul va intra in meniu
+ */
+
 public class Meniu extends JFrame implements ActionListener {
 
     public Container c;
@@ -29,6 +33,11 @@ public class Meniu extends JFrame implements ActionListener {
     Scanner in = new Scanner(socket.getInputStream());
     public String nume;
 
+    /**
+     * Interfata grafica a meniului
+     * @param nume
+     * @throws IOException
+     */
     public Meniu(String nume) throws IOException {
         this.nume = nume;
         setTitle("Game");
@@ -85,6 +94,14 @@ public class Meniu extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * Butonul find il va conecta la serverul de joc, unde va astepta un alt jucator sau va intra in meci daca un jucator
+     * era deja in asteptare.
+     * Butonul top va arata clasamentul utilizatorilor in ordine descrescatoare.
+     * Butonul users va arata utilizatorii logati la momentul actual.
+     * Butonul exit va deconecta utilizatorul.
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == find)
@@ -108,29 +125,21 @@ public class Meniu extends JFrame implements ActionListener {
                         CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.draw(?)}");
                         stmt.setString(1,nume);
                         stmt.execute();
-                        //Statement stmt = Main.db.createStatement();
-                        //ResultSet rs = stmt.executeQuery("UPDATE LOGARI SET PUNCTE = PUNCTE + 1 WHERE NICKNAME = '" + nume + "'");
                         System.out.println("A intrat pe remiza");
                     }
                     else
                     {
-                        //Statement stmt = Main.db.createStatement();
-
                         if(raspServer.contains(nume))
                         {
                             CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.win(?)}");
                             stmt.setString(1,nume);
                             stmt.execute();
-                            //ResultSet rs = stmt.executeQuery("UPDATE LOGARI SET PUNCTE = PUNCTE + 2 WHERE NICKNAME = '" + nume + "'");
-                            System.out.println("Asta a castigat");
                         }
                         else
                         {
                             CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.lost(?)}");
                             stmt.setString(1,nume);
                             stmt.execute();
-                            //ResultSet rs = stmt.executeQuery("UPDATE LOGARI SET PUNCTE = PUNCTE - 1 WHERE NICKNAME = '" + nume + "'");
-                            System.out.println("Asta a pierdut");
 
                         }
                     }
@@ -154,25 +163,20 @@ public class Meniu extends JFrame implements ActionListener {
                         CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.draw(?)}");
                         stmt.setString(1,nume);
                         stmt.execute();
-                        System.out.println("A intrat pe remiza");
                     }
                     else
                     {
-                        //Statement stmt = Main.db.createStatement();
                         if(raspServer.contains(nume))
                         {
                             CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.win(?)}");
                             stmt.setString(1,nume);
                             stmt.execute();
-                            System.out.println("Asta a castigat");
                         }
                         else
                         {
                             CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.lost(?)}");
                             stmt.setString(1,nume);
                             stmt.execute();
-                            System.out.println("Asta a pierdut");
-
                         }
                     }
                 }catch (Exception ex) {

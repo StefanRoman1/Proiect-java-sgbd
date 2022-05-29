@@ -8,8 +8,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
 
+/**
+ * Serverul la care se conecteaza utilizatorii deja conectati la aplicatie pentru a se juca un meci.
+ */
 public class GameServer extends JFrame {
     public static JTextArea text;
+
+    /**
+     * Ruland mainul, acesta asteapta sa intre 2 utilizatori pentru a deschide un joc pentru cei 2.
+     * @param args
+     * @throws IOException
+     */
 
     public static void main(String[] args) throws IOException {
 

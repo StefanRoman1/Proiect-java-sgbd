@@ -3,6 +3,9 @@ package com.company;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
+/**
+ * Clasa singleton pentru conexiunea cu baza de date
+ */
 public class DBConnection {
     private static Connection connection = null;
 
