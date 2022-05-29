@@ -20,6 +20,7 @@ public class Meniu extends JFrame implements ActionListener {
     private JButton find;
     private JButton logati;
     private JButton exit;
+    private JButton top;
     private JTextArea tout;
     final String HOST = "127.0.0.1";
     final int PORT = 4040;
@@ -38,7 +39,7 @@ public class Meniu extends JFrame implements ActionListener {
         c = getContentPane();
         c.setLayout(null);
 
-        title = new JLabel("Meniu");
+        title = new JLabel("Meniu - " + nume);
         title.setFont(new Font("Arial", Font.PLAIN, 30));
         title.setSize(300, 30);
         title.setLocation(250, 30);
@@ -56,9 +57,16 @@ public class Meniu extends JFrame implements ActionListener {
         find = new JButton("Find game");
         find.setFont(new Font("Arial", Font.PLAIN, 15));
         find.setSize(100, 20);
-        find.setLocation(100, 200);
+        find.setLocation(100, 100);
         find.addActionListener(this);
         c.add(find);
+
+        top = new JButton(("Top"));
+        top.setFont(new Font("Arial", Font.PLAIN, 15));
+        top.setSize(100,20);
+        top.setLocation(100,200);
+        top.addActionListener(this);
+        c.add(top);
 
         logati = new JButton("Users");
         logati.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -75,8 +83,6 @@ public class Meniu extends JFrame implements ActionListener {
         c.add(exit);
 
         setVisible(true);
-
-        System.out.println("Welcome " + nume);
     }
 
     @Override
@@ -88,16 +94,48 @@ public class Meniu extends JFrame implements ActionListener {
             tout.setText(input);
             if(input.equals("Waiting for another player..."))
             {
-                //this.dispose();
-                //new Game();
                 try {
                     Socket socket = new Socket(HOST, 2000);
                     PrintWriter gout = new PrintWriter(socket.getOutputStream(), true);
                     Scanner gin = new Scanner(socket.getInputStream());
                     gout.println(nume);
-                    System.out.println(gin.nextLine());
+                    String raspServer = null;
+                    raspServer = gin.nextLine();
+                    tout.setText(raspServer);
+                    System.out.println(raspServer);
+                    if(raspServer.contains("remiza"))
+                    {
+                        CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.draw(?)}");
+                        stmt.setString(1,nume);
+                        stmt.execute();
+                        //Statement stmt = Main.db.createStatement();
+                        //ResultSet rs = stmt.executeQuery("UPDATE LOGARI SET PUNCTE = PUNCTE + 1 WHERE NICKNAME = '" + nume + "'");
+                        System.out.println("A intrat pe remiza");
+                    }
+                    else
+                    {
+                        //Statement stmt = Main.db.createStatement();
+
+                        if(raspServer.contains(nume))
+                        {
+                            CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.win(?)}");
+                            stmt.setString(1,nume);
+                            stmt.execute();
+                            //ResultSet rs = stmt.executeQuery("UPDATE LOGARI SET PUNCTE = PUNCTE + 2 WHERE NICKNAME = '" + nume + "'");
+                            System.out.println("Asta a castigat");
+                        }
+                        else
+                        {
+                            CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.lost(?)}");
+                            stmt.setString(1,nume);
+                            stmt.execute();
+                            //ResultSet rs = stmt.executeQuery("UPDATE LOGARI SET PUNCTE = PUNCTE - 1 WHERE NICKNAME = '" + nume + "'");
+                            System.out.println("Asta a pierdut");
+
+                        }
+                    }
                 }catch (Exception ex) {
-                    System.out.println("eroare aiaie");
+                    ex.printStackTrace();
                 }
             }
             else if (input.equals("Match started!"))
@@ -107,8 +145,39 @@ public class Meniu extends JFrame implements ActionListener {
                     PrintWriter gout1 = new PrintWriter(socket.getOutputStream(), true);
                     Scanner gin1 = new Scanner(socket.getInputStream());
                     gout1.println(nume);
-                    System.out.println(gin1.nextLine());
-                }catch (Exception ex) {System.out.println("eroare aiaie2");}
+                    String raspServer = null;
+                    raspServer = gin1.nextLine();
+                    tout.setText(raspServer);
+                    System.out.println(raspServer);
+                    if(raspServer.contains("remiza"))
+                    {
+                        CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.draw(?)}");
+                        stmt.setString(1,nume);
+                        stmt.execute();
+                        System.out.println("A intrat pe remiza");
+                    }
+                    else
+                    {
+                        //Statement stmt = Main.db.createStatement();
+                        if(raspServer.contains(nume))
+                        {
+                            CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.win(?)}");
+                            stmt.setString(1,nume);
+                            stmt.execute();
+                            System.out.println("Asta a castigat");
+                        }
+                        else
+                        {
+                            CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.lost(?)}");
+                            stmt.setString(1,nume);
+                            stmt.execute();
+                            System.out.println("Asta a pierdut");
+
+                        }
+                    }
+                }catch (Exception ex) {
+                    ex.printStackTrace();
+                }
             }
         }
         else if(e.getSource() == logati)
@@ -116,35 +185,44 @@ public class Meniu extends JFrame implements ActionListener {
             tout.setText("");
             try {
                 Statement stmt = Main.db.createStatement();
-                ResultSet rs=stmt.executeQuery("select * from LOGARI");
-                while(rs.next())
-                {
+                ResultSet rs=stmt.executeQuery("select * from LOGARI WHERE STATE = 'online'");
+                while(rs.next()) {
                     String aux = rs.getString(3);
                     tout.append(aux);
                     tout.append(" : ");
                     tout.append(rs.getString(5));
                     tout.append("\n");
-                   //System.out.println(aux);
                 }
-                //tout.setText(String.valueOf(oameni));
             } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+        else
+        if(e.getSource() == top)
+        {
+            tout.setText("");
+            try {
+                Statement stmt = Main.db.createStatement();
+                ResultSet rs = stmt.executeQuery("Select * from LOGARI order by PUNCTE DESC");
+                while (rs.next()) {
+                    tout.append(rs.getString(3));
+                    tout.append(" : ");
+                    tout.append(String.valueOf(rs.getInt(6)));
+                    tout.append("\n");
+                }
+            }catch(Exception ex) {
                 ex.printStackTrace();
             }
         }
         else
         {
             out.println("exit");
-            Statement alter = null;
             try {
-                alter = Main.db.createStatement();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            String s = "UPDATE LOGARI SET STATE = 'offline' WHERE NICKNAME = " + "'" + nume + "'";
-            try {
-                alter.executeQuery(s);
-            } catch (SQLException ex) {
-                ex.printStackTrace();
+                CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.disconnect(?)}");
+                stmt.setString(1,nume);
+                stmt.execute();
+            }catch(Exception expe){
+                expe.printStackTrace();
             }
             this.dispose();
         }

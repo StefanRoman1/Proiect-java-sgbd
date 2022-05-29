@@ -88,32 +88,40 @@ public class LoginForm extends JFrame implements ActionListener{
         if (e.getSource() == login)
         {
             try {
-                CallableStatement stmt = Main.db.prepareCall("{? = call login(?,?)}");
+                CallableStatement stmt = Main.db.prepareCall("{? = call proiect_sgbd.login(?,?)}");
                 stmt.registerOutParameter(1, Types.VARCHAR);
                 stmt.setString(2,tname.getText());
                 stmt.setString(3,tpassword.getText());
                 stmt.execute();
                 String result = stmt.getString(1);
-                System.out.println(result);
                 if(result.equals("fail"))
                 {
                     res.setText("Username or password incorrect");
                 }
                 else
                 {
-                    res.setText("Logged in");
-                    Statement alter = Main.db.createStatement();
-                    String s = "UPDATE LOGARI SET STATE = 'online' WHERE NICKNAME = " + "'" + result + "'";
-                    alter.executeQuery(s);
-                    this.dispose();
-                    meniu = new Meniu(result);
+                    CallableStatement stmt1 = Main.db.prepareCall("{? = call proiect_sgbd.logg_in_check(?)}");
+                    stmt1.registerOutParameter(1, Types.VARCHAR);
+                    stmt1.setString(2,tname.getText());
+                    stmt1.execute();
+                    String result1 = stmt1.getString(1);
+                    if(result1.equals("online"))
+                    {
+                        res.setText("Users already logged in!");
+                    }
+                    else
+                    {
+                        res.setText("Logged in");
+                        CallableStatement stmt2 = Main.db.prepareCall("{call proiect_sgbd.logged_in(?)}");
+                        stmt2.setString(1,result);
+                        stmt2.execute();
+                        this.dispose();
+                        meniu = new Meniu(result);
+                    }
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            } catch (IOException ex) {
+            } catch (SQLException | IOException ex) {
                 ex.printStackTrace();
             }
-
         }
         else if (e.getSource() == register) {
             res.setText("Going to register");

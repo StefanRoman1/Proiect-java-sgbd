@@ -1,14 +1,11 @@
 package com.company;
 
-import oracle.jdbc.util.Login;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.CallableStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 public class RegisterForm extends JFrame implements ActionListener {
 
@@ -126,7 +123,7 @@ public class RegisterForm extends JFrame implements ActionListener {
         {
             res.setText("Registered!");
             try {
-                CallableStatement stmt = Main.db.prepareCall("{call register(?,?,?,?)}");
+                CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.register(?,?,?,?)}");
                 stmt.setString(1,tlname.getText());
                 stmt.setString(2,tfname.getText());
                 stmt.setString(3,tnickname.getText());
