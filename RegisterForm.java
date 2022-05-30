@@ -26,6 +26,7 @@ public class RegisterForm extends JFrame implements ActionListener {
     private JLabel nickname;
     private JTextField tnickname;
     private JButton register;
+    private JButton exit;
     private JLabel res;
     public LoginForm loginForm;
 
@@ -111,9 +112,16 @@ public class RegisterForm extends JFrame implements ActionListener {
         register = new JButton("Submit");
         register.setFont(new Font("Arial", Font.PLAIN, 15));
         register.setSize(100, 20);
-        register.setLocation(200, 450);
+        register.setLocation(150, 450);
         register.addActionListener(this);
         c.add(register);
+
+        exit = new JButton("Exit");
+        exit.setFont(new Font("Arial", Font.PLAIN, 15));
+        exit.setSize(100,20);
+        exit.setLocation(270,450);
+        exit.addActionListener(this);
+        c.add(exit);
 
         res = new JLabel("");
         res.setFont(new Font("Arial", Font.PLAIN, 20));
@@ -130,25 +138,31 @@ public class RegisterForm extends JFrame implements ActionListener {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(tpassword.getText().equals(trepassword.getText()))
+        if(e.getSource() == exit)
         {
-            res.setText("Registered!");
-            try {
-                CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.register(?,?,?,?)}");
-                stmt.setString(1,tlname.getText());
-                stmt.setString(2,tfname.getText());
-                stmt.setString(3,tnickname.getText());
-                stmt.setString(4,tpassword.getText());
-                stmt.execute();
-                this.dispose();
-                loginForm = new LoginForm();
-            } catch (SQLException ex) {
-                res.setText("Empty fields!");
+            this.dispose();
+            loginForm = new LoginForm();
+        }
+        else{
+            if(tpassword.getText().equals(trepassword.getText()))
+            {
+                res.setText("Registered!");
+                try {
+                    CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.register(?,?,?,?)}");
+                    stmt.setString(1,tlname.getText());
+                    stmt.setString(2,tfname.getText());
+                    stmt.setString(3,tnickname.getText());
+                    stmt.setString(4,tpassword.getText());
+                    stmt.execute();
+                    this.dispose();
+                    loginForm = new LoginForm();
+                } catch (SQLException ex) {
+                    res.setText("Empty fields!");
+                }
+            }
+            else {
+                res.setText("Passwords do not match!");
             }
         }
-        else {
-            res.setText("Passwords do not match!");
-        }
-
     }
 }

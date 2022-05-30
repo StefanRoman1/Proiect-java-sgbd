@@ -9,9 +9,6 @@ import java.util.*;
  * Serverul la care se conecteaza toti clientii in mod concurent
  */
 public class Server {
-    /**
-     * @param waiting este folosit pentru a grupa utilizatorii 2 cate 2 in meciuri
-     */
     public static int waiting = 0;
 
     /**
