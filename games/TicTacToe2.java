@@ -1,4 +1,6 @@
-package com.company;
+package games;
+
+import com.company.Player;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -94,7 +96,6 @@ public class TicTacToe2 implements ActionListener {
             frame1.add(t_panel1, BorderLayout.NORTH);
             frame1.add(bt_panel1);
         }
-
     }
 
     /**

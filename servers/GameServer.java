@@ -1,9 +1,10 @@
-package com.company;
+package servers;
+
+import com.company.Player;
+import games.TicTacToe2;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Scanner;
@@ -12,6 +13,7 @@ import java.util.Scanner;
  * Serverul la care se conecteaza utilizatorii deja conectati la aplicatie pentru a se juca un meci.
  */
 public class GameServer extends JFrame {
+    public static int playersNumber = 0;
     public static JTextArea text;
 
     /**
@@ -30,6 +32,7 @@ public class GameServer extends JFrame {
         {
             System.out.println("Asteptam jucator 1...");
             jucator1socket = serverSocket.accept();
+            playersNumber++;
             String nume = null;
             try{
                 Scanner in1 = new Scanner(jucator1socket.getInputStream());
@@ -38,9 +41,11 @@ public class GameServer extends JFrame {
                 e.printStackTrace();
             }
             Player player1 = new Player(jucator1socket,nume);
+            //new TicTacToe2(player1);
 
             System.out.println("Asteptam jucator 2...");
             jucator2socket = serverSocket.accept();
+            playersNumber++;
             try{
                 Scanner in2 = new Scanner(jucator2socket.getInputStream());
                 nume = in2.nextLine();
@@ -48,6 +53,7 @@ public class GameServer extends JFrame {
                 e.printStackTrace();
             }
             Player player2 = new Player(jucator2socket,nume);
+            //new TicTacToe2(player2);
             new TicTacToe2(player1,player2);
         }
     }

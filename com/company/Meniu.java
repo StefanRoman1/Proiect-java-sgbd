@@ -1,5 +1,8 @@
 package com.company;
 
+import games.TicTacToe2;
+import servers.GameServer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -11,6 +14,7 @@ import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -20,6 +24,7 @@ import java.util.Scanner;
 public class Meniu extends JFrame implements ActionListener {
 
     public Container c;
+    private JLabel points;
     private JLabel title;
     private JButton find;
     private JButton logati;
@@ -32,6 +37,17 @@ public class Meniu extends JFrame implements ActionListener {
     PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
     Scanner in = new Scanner(socket.getInputStream());
     public String nume;
+
+    public void pointsUpdate() {
+        try{
+            Statement stmt=Main.db.createStatement();
+            ResultSet rs = stmt.executeQuery("select puncte from LOGARI where nickname = '" + nume + "'");
+            rs.next();
+            points.setText("Points : " + rs.getInt(1));
+        }catch(Exception exc){
+            exc.printStackTrace();
+        }
+    }
 
     /**
      * Interfata grafica a meniului
@@ -48,50 +64,77 @@ public class Meniu extends JFrame implements ActionListener {
         c = getContentPane();
         c.setLayout(null);
 
-        title = new JLabel("Meniu - " + nume);
-        title.setFont(new Font("Arial", Font.PLAIN, 30));
+        points = new JLabel("Points : ");
+        points.setFont(new Font("Arial", Font.PLAIN, 15));
+        points.setForeground(Color.getHSBColor(15.5f,55f,60f));
+        points.setSize(300, 30);
+        points.setLocation(20, 10);
+        try{
+            Statement stmt=Main.db.createStatement();
+            ResultSet rs = stmt.executeQuery("select puncte from LOGARI where nickname = '" + nume + "'");
+            rs.next();
+            points.setText("Points : " + rs.getInt(1));
+        }catch(Exception exc){
+            exc.printStackTrace();
+        }
+        c.add(points);
+
+        title = new JLabel("User : " + nume);
+        title.setFont(new Font("Arial", Font.PLAIN, 15));
+        title.setForeground(Color.getHSBColor(15.5f,55f,60f));
         title.setSize(300, 30);
-        title.setLocation(250, 30);
+        title.setLocation(480, 10);
         c.add(title);
 
         tout = new JTextArea();
         tout.setFont(new Font("Arial", Font.PLAIN, 15));
-        tout.setSize(300, 400);
-        tout.setLocation(250, 100);
+        tout.setForeground(Color.getHSBColor(12.7f,50f,40f));
+        tout.setBackground(Color.getHSBColor(15.5f,55f,60f));
+        tout.setSize(300, 600);
+        tout.setLocation(150, 0);
         tout.setLineWrap(true);
         tout.setEditable(false);
         c.add(tout);
 
 
-        find = new JButton("Find game");
+        find = new JButton("Play");
         find.setFont(new Font("Arial", Font.PLAIN, 15));
+        find.setBackground(Color.getHSBColor(15.5f,55f,60f));
+        find.setForeground(Color.getHSBColor(12.7f,50f,40f));
         find.setSize(100, 20);
-        find.setLocation(100, 100);
+        find.setLocation(20, 150);
         find.addActionListener(this);
         c.add(find);
 
         top = new JButton(("Top"));
         top.setFont(new Font("Arial", Font.PLAIN, 15));
+        top.setBackground(Color.getHSBColor(15.5f,55f,60f));
+        top.setForeground(Color.getHSBColor(12.7f,50f,40f));
         top.setSize(100,20);
-        top.setLocation(100,200);
+        top.setLocation(470,150);
         top.addActionListener(this);
         c.add(top);
 
         logati = new JButton("Users");
         logati.setFont(new Font("Arial", Font.PLAIN, 15));
+        logati.setForeground(Color.getHSBColor(12.7f,50f,40f));
+        logati.setBackground(Color.getHSBColor(15.5f,55f,60f));
         logati.setSize(100, 20);
-        logati.setLocation(100, 300);
+        logati.setLocation(470, 350);
         logati.addActionListener(this);
         c.add(logati);
 
         exit = new JButton("Exit");
         exit.setFont(new Font("Arial", Font.PLAIN, 15));
+        exit.setBackground(Color.getHSBColor(15.5f,55f,60f));
+        exit.setForeground(Color.getHSBColor(12.7f,50f,40f));
         exit.setSize(100, 20);
-        exit.setLocation(100, 400);
+        exit.setLocation(20, 350);
         exit.addActionListener(this);
         c.add(exit);
 
         setVisible(true);
+        c.setBackground(Color.getHSBColor(12.7f,50f,40f));
     }
 
     /**
@@ -119,13 +162,12 @@ public class Meniu extends JFrame implements ActionListener {
                     String raspServer = null;
                     raspServer = gin.nextLine();
                     tout.setText(raspServer);
-                    System.out.println(raspServer);
                     if(raspServer.contains("remiza"))
                     {
                         CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.draw(?)}");
                         stmt.setString(1,nume);
                         stmt.execute();
-                        System.out.println("A intrat pe remiza");
+                        pointsUpdate();
                     }
                     else
                     {
@@ -134,12 +176,14 @@ public class Meniu extends JFrame implements ActionListener {
                             CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.win(?)}");
                             stmt.setString(1,nume);
                             stmt.execute();
+                            pointsUpdate();
                         }
                         else
                         {
                             CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.lost(?)}");
                             stmt.setString(1,nume);
                             stmt.execute();
+                            pointsUpdate();
 
                         }
                     }
@@ -157,12 +201,12 @@ public class Meniu extends JFrame implements ActionListener {
                     String raspServer = null;
                     raspServer = gin1.nextLine();
                     tout.setText(raspServer);
-                    System.out.println(raspServer);
                     if(raspServer.contains("remiza"))
                     {
                         CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.draw(?)}");
                         stmt.setString(1,nume);
                         stmt.execute();
+                        pointsUpdate();
                     }
                     else
                     {
@@ -171,12 +215,14 @@ public class Meniu extends JFrame implements ActionListener {
                             CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.win(?)}");
                             stmt.setString(1,nume);
                             stmt.execute();
+                            pointsUpdate();
                         }
                         else
                         {
                             CallableStatement stmt = Main.db.prepareCall("{call proiect_sgbd.lost(?)}");
                             stmt.setString(1,nume);
                             stmt.execute();
+                            pointsUpdate();
                         }
                     }
                 }catch (Exception ex) {
